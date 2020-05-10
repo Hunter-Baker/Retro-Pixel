@@ -5,6 +5,11 @@ sol = {}
 sol.x = 0
 sol.y = 7/8*hauteur
 
+mur = {}
+mur.droit = {}
+mur.gauche = {}
+mur.obstacle = {}
+
 personnage = {}
 personnage.x = largeur/2
 personnage.y = 7/8*hauteur
@@ -42,10 +47,26 @@ function Move(dt)
 
 function love.load()
   personnage.y = sol.y
+  
+  mur.droit.x = largeur - 10
+  mur.droit.y = 0
+  
+  mur.gauche.x = 0
+  mur.gauche.y = 0
 end
 
 function love.update(dt)
   Move(dt)
+  
+  if personnage.x > mur.droit.x then
+    personnage.x = mur.droit. x
+    personnage.vx = 0
+  end
+  
+  if personnage.x - 20 < mur.gauche.x then
+    personnage.x = mur.gauche.x + 20
+    personnage.vx = 0
+  end
   
   --Saut
   if personnage.y + 10 <= sol.y + personnage.vy*dt then
@@ -61,4 +82,11 @@ function love.draw()
   love.graphics.rectangle("fill", personnage.x - 10, personnage.y - 10, 10, 10)
   --Sol
   love.graphics.rectangle("fill", sol.x, sol.y, largeur, hauteur)
+  
+  --Murs :
+  --Mur droit :
+  love.graphics.rectangle("fill", mur.droit.x, mur.droit.y, 10, hauteur)
+  
+  --Mur gauche :
+   love.graphics.rectangle("fill", mur.gauche.x, mur.gauche.y, 10, hauteur)
 end
