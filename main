@@ -8,6 +8,7 @@ personnage.vx = 0
 
 a = 2
 
+
 function Move(dt)
     if love.keyboard.isDown('d') == true then
       personnage.vx = personnage.vx + a*dt
