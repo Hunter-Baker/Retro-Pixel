@@ -1,0 +1,47 @@
+largeur = love.graphics.getWidth()
+hauteur = love.graphics.getHeight()
+
+personnage = {}
+personnage.x = 10
+personnage.y = 7/8*hauteur
+personnage.vx = 0
+
+a = 2
+
+function Move(dt)
+    if love.keyboard.isDown('d') == true then
+      personnage.vx = personnage.vx + a*dt
+    else
+      if love.keyboard.isDown('d') == true and personnage.vx < 0 and personnage.vx > -30 then
+        personnage.vx = personnage.vx + 3*a*dt
+      end
+      if love.keyboard.isDown('d') == true and personnage.vx < -30 then
+        personnage.vx = personnage.vx
+      end
+      if love.keyboard.isDown('q') == true and personnage.vx > 0 and personnage.vx < 30 or personnage.vx > 0 then
+        personnage.vx = personnage.vx - 3*a*dt
+      else 
+        if love.keyboard.isDown('q') == true and personnage.vx > 30 then
+        personnage.vx = personnage.vx
+        end
+        if love.keyboard.isDown('q') == true then
+          personnage.vx = personnage.vx - a*dt
+        elseif personnage.vx < 0 and personnage.vx > -30 then
+            personnage.vx = personnage.vx + 3*a*dt
+      end
+    end
+  end
+  personnage.x = personnage.x + personnage.vx
+  end
+
+function love.load()
+end
+
+function love.update(dt)
+  Move(dt)
+  
+end
+
+function love.draw()
+  love.graphics.rectangle("fill", personnage.x - 10, personnage.y - 10, 10, 10)
+end
