@@ -1,34 +1,39 @@
 largeur = love.graphics.getWidth()
 hauteur = love.graphics.getHeight()
 
+sol = {}
+sol.x = 0
+sol.y = 7/8*hauteur
+
 personnage = {}
-personnage.x = 10
+personnage.x = largeur/2
 personnage.y = 7/8*hauteur
 personnage.vx = 0
+personnage.vy = 0
 
-a = 2
-
+ax = 2
+ay = 15
 
 function Move(dt)
     if love.keyboard.isDown('d') == true then
-      personnage.vx = personnage.vx + a*dt
+      personnage.vx = personnage.vx + ax*dt
     else
       if love.keyboard.isDown('d') == true and personnage.vx < 0 and personnage.vx > -30 then
-        personnage.vx = personnage.vx + 3*a*dt
+        personnage.vx = personnage.vx + 3*ax*dt
       end
       if love.keyboard.isDown('d') == true and personnage.vx < -30 then
         personnage.vx = personnage.vx
       end
       if love.keyboard.isDown('q') == true and personnage.vx > 0 and personnage.vx < 30 or personnage.vx > 0 then
-        personnage.vx = personnage.vx - 3*a*dt
+        personnage.vx = personnage.vx - 3*ax*dt
       else 
         if love.keyboard.isDown('q') == true and personnage.vx > 30 then
         personnage.vx = personnage.vx
         end
         if love.keyboard.isDown('q') == true then
-          personnage.vx = personnage.vx - a*dt
+          personnage.vx = personnage.vx - ax*dt
         elseif personnage.vx < 0 and personnage.vx > -30 then
-            personnage.vx = personnage.vx + 3*a*dt
+            personnage.vx = personnage.vx + 3*ax*dt
       end
     end
   end
@@ -36,13 +41,24 @@ function Move(dt)
   end
 
 function love.load()
+  personnage.y = sol.y
 end
 
 function love.update(dt)
   Move(dt)
   
+  --Saut
+  if personnage.y + 10 <= sol.y + personnage.vy*dt then
+    personnage.vy = personnage.vy + ay*dt
+  else personnage.vy = personnage.vy - 1
+  end
+  personnage.y = personnage.vy + personnage.y
+  
 end
 
 function love.draw()
+  --Personnage
   love.graphics.rectangle("fill", personnage.x - 10, personnage.y - 10, 10, 10)
+  --Sol
+  love.graphics.rectangle("fill", sol.x, sol.y, largeur, hauteur)
 end
