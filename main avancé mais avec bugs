@@ -1,0 +1,132 @@
+largeur = love.graphics.getWidth()
+hauteur = love.graphics.getHeight()
+
+sol = {}
+sol.x = 0
+sol.y = 7/8*hauteur
+
+mur = {}
+mur.droit = {}
+mur.gauche = {}
+mur.obstacle = {}
+
+personnage = {}
+personnage.x = largeur/2
+personnage.y = 7/8*hauteur 
+personnage.vx = 0
+personnage.vy = 0
+
+ax = 75
+ay = 500
+
+sautContact = true
+sautMural = false
+
+frame = 0
+secondes = 0
+
+function love.load()
+  n=0
+  personnage.y = sol.y
+  
+  mur.droit.x = largeur - 10
+  mur.droit.y = 0
+  
+  mur.gauche.x = 0
+  mur.gauche.y = 0
+  
+  jingle = love.audio.newSource("sons/Jingle.wav", "static")
+  love.audio.play(jingle)
+  acceuil = true
+end
+
+function love.update(dt)
+  --Déplacements !!! A REVOIR !!!
+  if (love.keyboard.isDown('d') == true or love.keyboard.isDown("right") == true) and personnage.vx <= 0 and personnage.vx > -30 then
+    personnage.vx = personnage.vx + 3*ax*dt 
+    print("1")
+  elseif (love.keyboard.isDown('d') == true or love.keyboard.isDown("right") == true) and personnage.vx < -30 then
+    print("2")
+  elseif (love.keyboard.isDown('q') == true or love.keyboard.isDown("left") == true ) and personnage.vx >= 0 and personnage.vx < 30 or (personnage.vx > 0 and (love.keyboard.isDown('d') == true or love.keyboard.isDown("right") == true)) and personnage.vx - 3*ax*dt > 0 then
+    personnage.vx = personnage.vx - 3*ax*dt
+    print("3")
+  elseif (love.keyboard.isDown('q') == true or love.keyboard.isDown("left") == true ) and personnage.vx > 30 then
+    print("4")
+  end
+  personnage.x = personnage.x + personnage.vx
+  
+
+  --Collisions avec les murs et saut automatique au contact
+  if personnage.x > mur.droit.x then
+    personnage.x = mur.droit. x
+    personnage.vx = 0
+    if sautContact == true then
+      personnage.vy = personnage.vy + 1/8*ay*dt 
+      sautContact = false
+      sautMural = true
+    end
+  end
+  
+  if personnage.x - 20 < mur.gauche.x then
+    personnage.x = mur.gauche.x + 20
+    personnage.vx = 0
+    if sautContact == true then
+      personnage.vy = personnage.vy + 1/8*ay*dt 
+      sautContact = false
+      sautMural = true
+    end
+  end
+  
+  if personnage.x - 20 > mur.gauche.x and personnage.x < mur.droit.x then
+    sautContact = true
+  end
+  
+  --Saut en s'éloignant du mur
+  if personnage.x - 20 > mur.gauche.x and personnage.x < mur.droit.x and sautMural == true then
+     personnage.vy = personnage.vy + 1/8*ay*dt 
+      sautMural = false
+  end
+  
+  --Saut sol
+  if personnage.y + 10 >= sol.y then
+    personnage.vy = ay*dt
+else personnage.vy = personnage.vy - 1/20 * ay*dt
+  end
+  personnage.y = personnage.y - personnage.vy
+  
+  --Nombre de frame écoulées
+  frame = frame+1
+  --Nombre de secondes écoulées
+  secondes = secondes + dt
+  
+  --bug
+  
+end
+
+function love.draw()
+  if personnage.vy < 0 and personnage.y >= sol.y - 50 then
+    acceuil = false
+  end
+  
+  
+  
+  if acceuil == true then
+    love.graphics.print("Bienvenue", largeur/2 - 50, hauteur/2 - 30, 0, 2, 2)
+    love.graphics.print("dans", largeur/2, hauteur/2 + 6 )
+    love.graphics.print("Retro Pixel", largeur/2 - 50, hauteur/2 + 30, 0, 1.5, 1.5)
+  end
+  
+  if acceuil == false then
+  --Personnage
+  love.graphics.rectangle("fill", personnage.x - 10, personnage.y - 10, 10, 10)
+  --Sol
+  love.graphics.rectangle("fill", sol.x, sol.y, largeur, hauteur)
+  
+  --Murs :
+  --Mur droit :
+  love.graphics.rectangle("fill", mur.droit.x, mur.droit.y, 10, hauteur)
+  
+  --Mur gauche :
+   love.graphics.rectangle("fill", mur.gauche.x, mur.gauche.y, 10, hauteur)
+   end
+end
